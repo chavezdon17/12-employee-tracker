@@ -40,6 +40,11 @@ function startApp() {
           case "View all Departments":
             showDep();
             break
+            case "Add Employee":
+            addEmp()
+            break
+            case "Delete Employee":
+              deleteEmp();
       }
     })
 };
@@ -86,3 +91,18 @@ inquirer.prompt ([{
 ]);
 }
 
+const  deleteEmp = () => {
+  inquirer.prompt ([{
+    name: "deleteEmp",
+    type: "input",
+    message:"Which Employee would you like to remove?", 
+  }
+]).then((res) => {
+  connection.query('DELETE FROM employee(?)', [res.showEmployees],
+  function(err, res){
+    if (err) throw err;
+    console.log('Employee Removed');
+    startApp();
+  });
+})
+}
