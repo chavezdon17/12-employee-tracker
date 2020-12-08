@@ -22,8 +22,16 @@ function startApp() {
       name: "startMenu",
       type: "List",
       message: "Select option",
-      choices:startingQuestions,
-      const: startingQuestions ["View all Employees", "View all Departments", "View all Roles", "Add Employee", "Add Role", "Add Department", "Remove Employee", "Update Employee Role", "Exit"]
+      choices: 
+      ["View all Employees", 
+      "View all Departments", 
+      "View all Roles", 
+      "Add Employee", 
+      "Add Role", 
+      "Add Department", 
+      "Remove Employee", 
+      "Update Employee Role", 
+      "Exit"]
     }).then((answer) => {
       switch (answer.startMenu){
         case "View all Employees":
@@ -52,5 +60,29 @@ const showDep = () => {
     table.printTable(res);
 startApp();
   });
+}
+
+const addEmp = () => {
+inquirer.prompt ([{
+  name: "first_name",
+  type: "input",
+  message:"What is the employee's first name?" 
+},
+{
+    name: "last_name",
+    type: "input",
+    message:"What is the employee's last name?" 
+},
+{
+  name: "title",
+  type: "input",
+  message:"What is the employee's role?" 
+},
+{
+  name: "employeeId",
+  type: "input",
+  message:"What is the employee's Id?" 
+},
+]);
 }
 
