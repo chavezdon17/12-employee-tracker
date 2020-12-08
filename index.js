@@ -23,53 +23,34 @@ function startApp() {
       type: "List",
       message: "Select option",
       choices:startingQuestions,
-      const: startingQuestions ["View all Employees", "View all departments", "View all Roles", "Add Employee", "Add Role", "Add Department", "Remove Employee", "Update Employee Role", "Exit"]
+      const: startingQuestions ["View all Employees", "View all Departments", "View all Roles", "Add Employee", "Add Role", "Add Department", "Remove Employee", "Update Employee Role", "Exit"]
+    }).then((answer) => {
+      switch (answer.startMenu){
+        case "View all Employees":
+          showEmployees();
+          break;
+          case "View all Departments":
+            showDep();
+            break
+      }
     })
+};
+
+const showEmployees = () => {
+  connection.query('Select * From employee', (err,res) => {
+    if (err) throw err 
+    console.log("Please choose a choice")
+    table.printTable(res);
+startApp();
+  });
 }
 
-// function to handle posting new items up for auction
-function postAuction() {
-  // prompt for info about the item being put up for auction
-  inquirer
-    .prompt([
-      {
-        name: "item",
-        type: "input",
-        message: "What is the item you would like to submit?",
-      },
-      {
-        name: "category",
-        type: "input",
-        message: "What category would you like to place your auction in?",
-      },
-      {
-        name: "startingBid",
-        type: "input",
-        message: "What would you like your starting bid to be?",
-        validate: function (value) {
-          if (isNaN(value) === false) {
-            return true;
-          }
-          return false;
-        },
-      },
-    ])
-    .then(function (answer) {
-      // when finished prompting, insert a new item into the db with that info
-      connection.query(
-        "INSERT INTO auctions SET ?",
-        {
-          item_name: answer.item,
-          category: answer.category,
-          starting_bid: answer.startingBid || 0,
-          highest_bid: answer.startingBid || 0,
-        },
-        function (err) {
-          if (err) throw err;
-          console.log("Your auction was created successfully!");
-          // re-prompt the user for if they want to bid or post
-          start();
-        }
-      );
-    });
+const showDep = () => {
+  connection.query('Select * From Department', (err,res) => {
+    if (err) throw err 
+    console.log("Please choose a Department")
+    table.printTable(res);
+startApp();
+  });
 }
+
