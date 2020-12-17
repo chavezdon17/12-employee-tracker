@@ -28,6 +28,7 @@ function startApp() {
         "Add Employee",
         "Add Role",
         "Remove Employee",
+        "Remove Role",
         "Update Employee Role",
         "Exit",
       ],
@@ -40,13 +41,23 @@ function startApp() {
         case "View all Departments":
           showDep();
           break;
+        case "View all Roles":
+          showRole();
+          break;
         case "Add Employee":
           addEmp();
           break;
         case "Delete Employee":
           deleteEmp();
           break;
-        case addRole():
+        case "Add Role":
+          addRole();
+          break;
+        case "Remove Role":
+          removeRole();
+          break;
+        case "Update Employee Role":
+          updateEmployeeRole();
           break;
       }
     });
@@ -63,6 +74,15 @@ const showEmployees = () => {
 
 const showDep = () => {
   connection.query("Select * From Department", (err, res) => {
+    if (err) throw err;
+    console.log("Please choose a Department");
+    console.table(res);
+    startApp();
+  });
+};
+
+const showRole = () => {
+  connection.query("Select * From Role", (err, res) => {
     if (err) throw err;
     console.log("Please choose a Department");
     console.table(res);
@@ -129,32 +149,73 @@ const deleteEmp = () => {
 };
 
 const addRole = () => {
-  inquirer.prompt([
-    {
-      name: "addRole",
-      type: "input",
-      message: "Enter new role.",
-    },
-    {
-      name: "addSalary",
-      type: "input",
-      message: "Enter new Salary.",
-    },
-    {
-      name: "addDepartment",
-      type: "input",
-      message: "Enter new Department.",
-    }.then((res) => {
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "Enter new title.",
+      },
+      {
+        name: "Salary",
+        type: "input",
+        message: "Enter new Salary.",
+      },
+      {
+        name: "dep_id",
+        type: "input",
+        message: "Enter new Department.",
+      },
+    ])
+    .then((res) => {
+      connection.query("INSERT INTO role SET ?", res, function (err, res) {
+        if (err) throw err;
+        console.log("New role added");
+        startApp();
+      });
+    });
+};
+
+const removeRole = () => {
+  inquirer
+    .prompt([
+      {
+        name: "title",
+        type: "input",
+        message: "Which Role would you like to remove?",
+      },
+    ])
+    .then((res) => {
+      connection.query("DELETE FROM role WHERE ?", res, function (err, res) {
+        if (err) throw err;
+        console.log("Role Removed");
+        startApp();
+      });
+    });
+};
+
+function updateEmployeeRole() {
+  inquirer
+    .prompt([
+      {
+        name: "id",
+        type: "input",
+        message: "Which employee would you like to update?",
+      },
+      {
+        name: "role_id",
+        type: "input",
+        message: "What is the employee's new role?",
+      },
+    ])
+    .then((res) => {
       connection.query(
-        "Add Role FROM employee(?)",
-        [res.showEmployees],
+        "UPDATE employee SET ? WHERE ?",
+        [{ role_id: res.role_id }, { id: res.id }],
         function (err, res) {
           if (err) throw err;
-          console.log("try again");
-          console.log("New role added");
           startApp();
         }
       );
-    }),
-  ]);
-};
+    });
+}
