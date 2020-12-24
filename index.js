@@ -27,6 +27,7 @@ function startApp() {
         "View all Roles",
         "Add Employee",
         "Add Role",
+        "Add Department",
         "Remove Employee",
         "Remove Role",
         "Update Employee Role",
@@ -55,6 +56,9 @@ function startApp() {
           break;
         case "Remove Role":
           removeRole();
+          break;
+        case "Add Department":
+          addDepartment();
           break;
         case "Update Employee Role":
           updateEmployeeRole();
@@ -104,24 +108,25 @@ const addEmp = () => {
         message: "What is the employee's last name?",
       },
       {
-        name: "employee_title",
+        name: "role_id",
         type: "input",
         message: "What is the employee's role?",
       },
       {
-        name: "employeeId",
+        name: "manager_id",
         type: "input",
         message: "What is the employee's Id?",
       },
     ])
     .then((res) => {
       connection.query(
-        "Insert into employee (first_name, last_name, employee_title, employeeId"
+        "Insert into employee (first_name, last_name, role_id, manager_id)  values(?,?,?,?)",
+        [res.first_name, res.last_name, res.role_id, res.manager_id],
+        function (err, results) {
+          console.log("New employee added");
+          startApp();
+        }
       );
-      values("?,?,?,?"),
-        [res.first_name, res.last_name, res.employee_title, employeeId],
-        console.log("New employee added");
-      startApp();
     });
 };
 
@@ -219,3 +224,25 @@ function updateEmployeeRole() {
       );
     });
 }
+
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        name: "dep_name",
+        type: "input",
+        message: "Enter new department.",
+      },
+    ])
+    .then((res) => {
+      connection.query(
+        "INSERT INTO department SET ?",
+        res,
+        function (err, res) {
+          if (err) throw err;
+          console.log("New department added");
+          startApp();
+        }
+      );
+    });
+};
