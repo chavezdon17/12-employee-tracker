@@ -48,7 +48,7 @@ function startApp() {
         case "Add Employee":
           addEmp();
           break;
-        case "Delete Employee":
+        case "Remove Employee":
           deleteEmp();
           break;
         case "Add Role":
@@ -131,26 +131,37 @@ const addEmp = () => {
 };
 
 const deleteEmp = () => {
-  inquirer
-    .prompt([
-      {
-        name: "deleteEmp",
-        type: "input",
-        message: "Which Employee would you like to remove?",
-      },
-    ])
-    .then((res) => {
-      connection.query(
-        "DELETE FROM employee(?)",
-        [res.showEmployees],
-        function (err, res) {
-          if (err) throw err;
-          console.log("try again");
-          console.log("Employee Removed");
-          startApp();
-        }
-      );
+  connection.query("Select * From employee", (err, res) => {
+    if (err) throw err;
+
+    const employeeList = res.map((employee) => {
+      return `${employee.first_name} ${employee.last_name}`;
     });
+
+    inquirer
+      .prompt([
+        {
+          name: "deleteEmp",
+          type: "rawlist",
+          message: "Which Employee would you like to remove?",
+          choices: employeeList,
+        },
+      ])
+      .then((res) => {
+        connection.query(
+          "DELETE FROM employee WHERE ?",
+          [{ id: res.deleteEmp.id }],
+          function (err, res) {
+            if (err) throw err;
+            console.log("Employee Removed");
+            startApp();
+          }
+        );
+      });
+  });
+
+  //get emp list here
+  //pass id
 };
 
 const addRole = () => {
