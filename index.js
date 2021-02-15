@@ -202,6 +202,10 @@ const removeRole = () => {
       },
     ])
     .then((res) => {
+      const removeList = res.map((employee) => {
+        return `${employee.first_name} ${employee.last_name}`;
+      });
+
       connection.query("DELETE FROM role WHERE ?", res, function (err, res) {
         if (err) throw err;
         console.log("Role Removed");
